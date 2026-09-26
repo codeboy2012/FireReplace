@@ -1,0 +1,69 @@
+## ---------------------------------------------------------------------------
+## Build output
+## ---------------------------------------------------------------------------
+[Bb]in/
+[Oo]bj/
+artifacts/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+.vscode/
+.idea/
+*.received.*
+
+## A repo-local .NET SDK install (used when a developer cannot run a machine-wide installer).
+.sdk/
+
+## ---------------------------------------------------------------------------
+## Test and coverage output
+## ---------------------------------------------------------------------------
+[Tt]est[Rr]esult*/
+*.trx
+*.coverage
+*.coveragexml
+coverage*.json
+coverage*.xml
+coverage*.info
+
+## ---------------------------------------------------------------------------
+## Android Platform Tools — download these yourself.
+## Google distributes them under its own terms; they are not redistributed here.
+## Ignore the contents (so adb.exe and friends never get committed) but keep the README.
+## ---------------------------------------------------------------------------
+platform-tools/*
+!platform-tools/README.txt
+
+## ---------------------------------------------------------------------------
+## APKs — never commit these.
+## Home on Fire and Projectivy Launcher belong to their own projects, and their
+## redistribution terms are not ours to assume.
+## ---------------------------------------------------------------------------
+apks/*.apk
+*.apk
+
+## ---------------------------------------------------------------------------
+## Runtime output written beside the executable
+## ---------------------------------------------------------------------------
+backups/
+logs/
+*.log
+
+## ---------------------------------------------------------------------------
+## Generated from assets/icon.png at build time. Committed for convenience, so
+## this entry stays commented out; uncomment if you would rather always derive it.
+## ---------------------------------------------------------------------------
+# assets/icon.ico
+
+## ---------------------------------------------------------------------------
+## OS noise
+## ---------------------------------------------------------------------------
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+
+## Freebuff workspace state
+.freebuff/

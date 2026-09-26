@@ -1,0 +1,247 @@
+<Window x:Class="FireReplace.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+        xmlns:vm="clr-namespace:FireReplace.ViewModels"
+        xmlns:views="clr-namespace:FireReplace.Views"
+        xmlns:dialogs="clr-namespace:FireReplace.Dialogs"
+        Title="FireReplace"
+        Icon="pack://application:,,,/Assets/icon.png"
+        Width="1180" Height="760"
+        MinWidth="960" MinHeight="620"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource WindowBackgroundBrush}"
+        TextOptions.TextFormattingMode="Ideal"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        d:DataContext="{d:DesignInstance Type=vm:ShellViewModel}"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="36"
+                      ResizeBorderThickness="6"
+                      CornerRadius="0"
+                      GlassFrameThickness="0"
+                      UseAeroCaptionButtons="False" />
+    </WindowChrome.WindowChrome>
+
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type dialogs:ConfirmationDialogViewModel}">
+            <views:ConfirmDialogView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type dialogs:MessageDialogViewModel}">
+            <views:MessageDialogView />
+        </DataTemplate>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="36" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- ===================== Title bar ===================== -->
+        <Border Grid.Row="0" Background="{DynamicResource SidebarBackgroundBrush}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Image Grid.Column="0"
+                       Source="pack://application:,,,/Assets/icon.png"
+                       Width="18" Height="18"
+                       Margin="12,0,8,0"
+                       VerticalAlignment="Center"
+                       RenderOptions.BitmapScalingMode="HighQuality" />
+
+                <TextBlock Grid.Column="1"
+                           Text="FireReplace"
+                           FontSize="12.5"
+                           FontWeight="SemiBold"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource TextSecondaryBrush}" />
+
+                <!-- Dry run is loud on purpose: it changes what every button does. -->
+                <Border Grid.Column="3"
+                        Style="{StaticResource PillStyle}"
+                        Margin="0,0,8,0"
+                        Background="{DynamicResource AccentSoftBrush}"
+                        BorderBrush="{DynamicResource AccentBrush}"
+                        Visibility="{Binding IsDryRun, Converter={StaticResource BoolToVisibility}}"
+                        WindowChrome.IsHitTestVisibleInChrome="True">
+                    <TextBlock Text="DRY RUN — no changes will be written"
+                               FontSize="11"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource AccentBrush}" />
+                </Border>
+
+                <StackPanel Grid.Column="4" Orientation="Horizontal">
+                    <Button x:Name="MinimizeButton"
+                            Style="{StaticResource WindowButtonStyle}"
+                            Content="&#xE921;"
+                            ToolTip="Minimize"
+                            AutomationProperties.Name="Minimize"
+                            Click="OnMinimizeClick" />
+                    <Button x:Name="MaximizeButton"
+                            Style="{StaticResource WindowButtonStyle}"
+                            Content="&#xE922;"
+                            ToolTip="Maximize"
+                            AutomationProperties.Name="Maximize"
+                            Click="OnMaximizeClick" />
+                    <Button x:Name="CloseButton"
+                            Style="{StaticResource WindowButtonStyle}"
+                            Content="&#xE8BB;"
+                            ToolTip="Close"
+                            AutomationProperties.Name="Close"
+                            Click="OnCloseClick" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ===================== Body ===================== -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Sidebar -->
+            <Border Grid.Column="0"
+                    Width="216"
+                    Background="{DynamicResource SidebarBackgroundBrush}"
+                    BorderBrush="{DynamicResource BorderBrush}"
+                    BorderThickness="0,0,1,0"
+                    Visibility="{Binding IsConnected, Converter={StaticResource BoolToVisibility}}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Margin="20,18,20,14">
+                        <TextBlock Text="&#x1F525; FireReplace"
+                                   FontSize="15"
+                                   FontWeight="SemiBold" />
+                        <TextBlock Text="Fire TV customization"
+                                   Style="{StaticResource MutedTextStyle}"
+                                   FontSize="11"
+                                   Margin="0,2,0,0" />
+                    </StackPanel>
+
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding NavItems}"
+                                      KeyboardNavigation.TabNavigation="Continue">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <Border Height="1"
+                                                Margin="20,10"
+                                                Background="{DynamicResource BorderBrush}"
+                                                Visibility="{Binding HasSeparatorAbove, Converter={StaticResource BoolToVisibility}}" />
+                                        <RadioButton Style="{StaticResource NavButtonStyle}"
+                                                     GroupName="Navigation"
+                                                     Content="{Binding Label}"
+                                                     IsChecked="{Binding IsSelected, Mode=OneWay}"
+                                                     Command="{Binding DataContext.NavigateCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                     CommandParameter="{Binding}"
+                                                     AutomationProperties.Name="{Binding Label}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+
+                    <!-- Connection footer -->
+                    <Border Grid.Row="2"
+                            BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="0,1,0,0"
+                            Padding="20,14">
+                        <StackPanel>
+                            <TextBlock Text="{Binding ConnectionLabel}"
+                                       FontSize="12"
+                                       FontWeight="SemiBold" />
+                            <TextBlock Text="{Binding ConnectionDetail}"
+                                       Style="{StaticResource MonoTextStyle}"
+                                       Foreground="{DynamicResource TextMutedBrush}"
+                                       FontSize="11"
+                                       Margin="0,2,0,8" />
+                            <StackPanel Orientation="Horizontal">
+                                <Ellipse Width="8" Height="8"
+                                         VerticalAlignment="Center"
+                                         Fill="{Binding ConnectionStatus, Converter={StaticResource StatusBrush}}" />
+                                <TextBlock Text="ADB"
+                                           Margin="8,0,0,0"
+                                           FontSize="11"
+                                           VerticalAlignment="Center"
+                                           Foreground="{DynamicResource TextMutedBrush}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                <Button Content="Refresh"
+                                        Style="{StaticResource SecondaryButtonStyle}"
+                                        Padding="10,5"
+                                        MinWidth="0"
+                                        FontSize="12"
+                                        Command="{Binding RefreshCommand}" />
+                                <Button Content="Disconnect"
+                                        Style="{StaticResource SubtleButtonStyle}"
+                                        FontSize="12"
+                                        Margin="6,0,0,0"
+                                        Command="{Binding DisconnectCommand}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- Main area + log -->
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <ContentControl Grid.Row="0"
+                                Content="{Binding CurrentContent, NotifyOnTargetUpdated=True}"
+                                Focusable="False">
+                    <ContentControl.Style>
+                        <Style TargetType="ContentControl">
+                            <Style.Triggers>
+                                <!-- A single 120 ms fade marks the page change; nothing else animates. -->
+                                <EventTrigger RoutedEvent="Binding.TargetUpdated">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                             From="0" To="1" Duration="0:0:0.12" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ContentControl.Style>
+                </ContentControl>
+
+                <views:LogPanelView Grid.Row="1" DataContext="{Binding Log}" />
+            </Grid>
+        </Grid>
+
+        <!-- ===================== Overlays ===================== -->
+        <Border Grid.Row="0" Grid.RowSpan="2"
+                Background="{DynamicResource OverlayBrush}"
+                Visibility="{Binding IsWelcomeVisible, Converter={StaticResource BoolToVisibility}}">
+            <views:WelcomeView DataContext="{Binding Welcome}" />
+        </Border>
+
+        <Border Grid.Row="0" Grid.RowSpan="2"
+                Background="{DynamicResource OverlayBrush}"
+                Visibility="{Binding Dialogs.IsOpen, Converter={StaticResource BoolToVisibility}}">
+            <ContentControl Content="{Binding Dialogs.Active}" Focusable="False" />
+        </Border>
+    </Grid>
+</Window>

@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>FireReplace.Core</RootNamespace>
+    <AssemblyName>FireReplace.Core</AssemblyName>
+    <IsPublishable>false</IsPublishable>
+    <!-- Core stays UI-free and dependency-free so it is fast to load and easy to test. -->
+  </PropertyGroup>
+
+</Project>

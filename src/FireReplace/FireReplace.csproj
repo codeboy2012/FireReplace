@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>FireReplace</RootNamespace>
+    <AssemblyName>FireReplace</AssemblyName>
+    <AssemblyTitle>FireReplace</AssemblyTitle>
+    <Description>Fire TV customization made simple.</Description>
+    <ApplicationIcon>..\..\assets\icon.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+
+    <!-- Startup speed: ReadyToRun removes most JIT work from the first frame. -->
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <TieredPGO>true</TieredPGO>
+    <RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers>
+    <SelfContained>false</SelfContained>
+    <PublishTrimmed>false</PublishTrimmed>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FireReplace.Core\FireReplace.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The single supplied branding asset, embedded so the window icon needs no loose files. -->
+    <Resource Include="..\..\assets\icon.png" Link="Assets\icon.png" />
+  </ItemGroup>
+
+  <!--
+    Generates assets/icon.ico from assets/icon.png when it is missing, so a clean checkout builds
+    without any manual step. The .ico is derived from the supplied PNG; no new artwork is created.
+  -->
+  <Target Name="EnsureApplicationIcon" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <_IconSource>$(MSBuildThisFileDirectory)..\..\assets\icon.png</_IconSource>
+      <_IconTarget>$(MSBuildThisFileDirectory)..\..\assets\icon.ico</_IconTarget>
+      <_IconScript>$(MSBuildThisFileDirectory)..\..\scripts\generate-icon.ps1</_IconScript>
+    </PropertyGroup>
+    <Exec
+      Condition="!Exists('$(_IconTarget)') And Exists('$(_IconScript)')"
+      Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(_IconScript)&quot; -Source &quot;$(_IconSource)&quot; -Destination &quot;$(_IconTarget)&quot;"
+      ContinueOnError="true" />
+  </Target>
+
+</Project>

@@ -1,0 +1,54 @@
+<Application x:Class="FireReplace.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:conv="clr-namespace:FireReplace.Converters"
+             xmlns:vm="clr-namespace:FireReplace.ViewModels"
+             xmlns:views="clr-namespace:FireReplace.Views"
+             ShutdownMode="OnMainWindowClose">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- Index 0 is the palette and is replaced at runtime when the theme changes. -->
+                <ResourceDictionary Source="Themes/Dark.xaml" />
+                <ResourceDictionary Source="Themes/Controls.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <conv:BoolToVisibilityConverter x:Key="BoolToVisibility" />
+            <conv:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibility" />
+            <conv:InverseBooleanConverter x:Key="InverseBoolean" />
+            <conv:NullToVisibilityConverter x:Key="NullToVisibility" />
+            <conv:EmptyStringToVisibilityConverter x:Key="EmptyStringToVisibility" />
+            <conv:CountToVisibilityConverter x:Key="CountToVisibility" />
+            <conv:EmptyCountToVisibilityConverter x:Key="EmptyCountToVisibility" />
+            <conv:StatusBrushConverter x:Key="StatusBrush" />
+            <conv:LogLevelBrushConverter x:Key="LogLevelBrush" />
+            <conv:PackageStateBrushConverter x:Key="PackageStateBrush" />
+
+            <!-- Page templates: the shell swaps view models and WPF resolves the view. -->
+            <DataTemplate DataType="{x:Type vm:ConnectViewModel}">
+                <views:ConnectView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
+                <views:DashboardView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:LauncherViewModel}">
+                <views:LauncherView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:SettingsGroupViewModel}">
+                <views:SettingsGroupView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:DebloatViewModel}">
+                <views:DebloatView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:AppsViewModel}">
+                <views:AppsView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:DiagnosticsViewModel}">
+                <views:DiagnosticsView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:PreferencesViewModel}">
+                <views:PreferencesView />
+            </DataTemplate>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

@@ -1,0 +1,114 @@
+<UserControl x:Class="FireReplace.Views.LogPanelView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:FireReplace.ViewModels"
+             d:DataContext="{d:DesignInstance Type=vm:LogViewModel}"
+             mc:Ignorable="d">
+
+    <Border Background="{DynamicResource SidebarBackgroundBrush}"
+            BorderBrush="{DynamicResource BorderBrush}"
+            BorderThickness="0,1,0,0">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <Grid Grid.Row="0" Height="34" Margin="20,0">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="ADB LOG" Style="{StaticResource SectionLabelStyle}" VerticalAlignment="Center" />
+                    <Border Style="{StaticResource PillStyle}" Margin="10,0,0,0" Padding="7,1">
+                        <TextBlock Text="{Binding Entries.Count}" FontSize="10.5" Foreground="{DynamicResource TextMutedBrush}" />
+                    </Border>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <CheckBox Content="Show adb commands"
+                              IsChecked="{Binding ShowDebug}"
+                              FontSize="11"
+                              VerticalAlignment="Center"
+                              Margin="0,0,14,0" />
+                    <Button Content="Copy" Style="{StaticResource SubtleButtonStyle}" FontSize="11.5" Command="{Binding CopyCommand}" />
+                    <Button Content="Clear" Style="{StaticResource SubtleButtonStyle}" FontSize="11.5" Command="{Binding ClearCommand}" />
+                    <Button Content="Save log" Style="{StaticResource SubtleButtonStyle}" FontSize="11.5" Command="{Binding SaveCommand}" />
+                    <Button Style="{StaticResource SubtleButtonStyle}"
+                            FontSize="11.5"
+                            Margin="4,0,0,0"
+                            Command="{Binding ToggleExpandCommand}"
+                            ToolTip="Collapse or expand the log (Ctrl+L)">
+                        <Button.Content>
+                            <TextBlock>
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource BaseTextStyle}">
+                                        <Setter Property="Text" Value="Hide" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsExpanded}" Value="False">
+                                                <Setter Property="Text" Value="Show" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Button.Content>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <!-- Entries -->
+            <ListBox Grid.Row="1"
+                     x:Name="EntryList"
+                     Height="176"
+                     Margin="14,0,8,10"
+                     Style="{StaticResource PlainListBoxStyle}"
+                     ItemContainerStyle="{StaticResource RowItemStyle}"
+                     ItemsSource="{Binding Entries}"
+                     Focusable="False"
+                     Visibility="{Binding IsExpanded, Converter={StaticResource BoolToVisibility}}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="6,1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0"
+                                       Style="{StaticResource MonoTextStyle}"
+                                       FontSize="11.5"
+                                       Foreground="{DynamicResource TextMutedBrush}"
+                                       Text="{Binding Timestamp, StringFormat='[{0:HH:mm:ss}]'}" />
+
+                            <TextBlock Grid.Column="1"
+                                       Style="{StaticResource MonoTextStyle}"
+                                       FontSize="11.5"
+                                       Width="18"
+                                       Margin="8,0,0,0"
+                                       TextAlignment="Center"
+                                       Text="{Binding Glyph}"
+                                       Foreground="{Binding Level, Converter={StaticResource LogLevelBrush}}" />
+
+                            <StackPanel Grid.Column="2" Margin="4,0,0,0">
+                                <TextBlock Style="{StaticResource MonoTextStyle}"
+                                           FontSize="11.5"
+                                           TextWrapping="Wrap"
+                                           Text="{Binding Message}"
+                                           Foreground="{Binding Level, Converter={StaticResource LogLevelBrush}}" />
+                                <TextBlock Style="{StaticResource MonoTextStyle}"
+                                           FontSize="11"
+                                           TextWrapping="Wrap"
+                                           Margin="0,1,0,2"
+                                           Foreground="{DynamicResource TextMutedBrush}"
+                                           Text="{Binding Detail}"
+                                           Visibility="{Binding Detail, Converter={StaticResource EmptyStringToVisibility}}" />
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+    </Border>
+</UserControl>

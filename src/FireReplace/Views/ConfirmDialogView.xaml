@@ -1,0 +1,145 @@
+<UserControl x:Class="FireReplace.Views.ConfirmDialogView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:dialogs="clr-namespace:FireReplace.Dialogs"
+             d:DataContext="{d:DesignInstance Type=dialogs:ConfirmationDialogViewModel}"
+             mc:Ignorable="d">
+
+    <Border Style="{StaticResource CardStyle}"
+            Padding="0"
+            MaxWidth="820"
+            MaxHeight="660"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center"
+            BorderBrush="{DynamicResource BorderStrongBrush}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <StackPanel Grid.Row="0" Margin="28,26,28,0">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding Title}" FontSize="19" FontWeight="SemiBold" />
+                    <Border Style="{StaticResource PillStyle}"
+                            Margin="12,0,0,0"
+                            BorderBrush="{DynamicResource AccentBrush}"
+                            Background="{DynamicResource AccentSoftBrush}"
+                            Visibility="{Binding IsDryRun, Converter={StaticResource BoolToVisibility}}">
+                        <TextBlock Text="DRY RUN" FontSize="10" FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}" />
+                    </Border>
+                </StackPanel>
+
+                <TextBlock Text="{Binding Description}"
+                           Style="{StaticResource SecondaryTextStyle}"
+                           Margin="0,10,0,0"
+                           MaxWidth="740" />
+
+                <Border Style="{StaticResource InsetStyle}"
+                        Margin="0,14,0,0"
+                        BorderBrush="{DynamicResource WarningBrush}"
+                        Visibility="{Binding Warning, Converter={StaticResource EmptyStringToVisibility}}">
+                    <TextBlock Text="{Binding Warning}" Style="{StaticResource SecondaryTextStyle}"
+                               Foreground="{DynamicResource WarningBrush}" />
+                </Border>
+            </StackPanel>
+
+            <!-- Table header -->
+            <Grid Grid.Row="1" Margin="28,20,28,6">
+                <TextBlock Text="{Binding CountLabel}" Style="{StaticResource SectionLabelStyle}" />
+                <TextBlock Text="CURRENT  &#x2192;  NEW" Style="{StaticResource SectionLabelStyle}" HorizontalAlignment="Right" />
+            </Grid>
+
+            <!-- Changes -->
+            <ScrollViewer Grid.Row="2" Margin="28,0,20,0" VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding Rows}"
+                              VirtualizingPanel.IsVirtualizing="True"
+                              VirtualizingPanel.VirtualizationMode="Recycling">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource InsetStyle}" Margin="0,0,0,6" Padding="14,10">
+                                <StackPanel>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel Grid.Column="0" Margin="0,0,16,0">
+                                            <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="12.5" />
+                                            <TextBlock Text="{Binding Target}" Style="{StaticResource MonoTextStyle}"
+                                                       Foreground="{DynamicResource TextSecondaryBrush}"
+                                                       FontSize="11.5" Margin="0,3,0,0" TextWrapping="Wrap" />
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock Style="{StaticResource MonoTextStyle}"
+                                                       FontSize="11.5"
+                                                       TextAlignment="Right"
+                                                       TextWrapping="Wrap"
+                                                       MaxWidth="300"
+                                                       Foreground="{DynamicResource TextMutedBrush}"
+                                                       Text="{Binding CurrentValue}" />
+                                            <TextBlock Style="{StaticResource MonoTextStyle}"
+                                                       FontSize="12"
+                                                       TextAlignment="Right"
+                                                       TextWrapping="Wrap"
+                                                       MaxWidth="300"
+                                                       Margin="0,2,0,0"
+                                                       Foreground="{DynamicResource AccentBrush}"
+                                                       Text="{Binding NewValue}" />
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <TextBlock Text="{Binding Detail}"
+                                               Style="{StaticResource MutedTextStyle}"
+                                               FontSize="11"
+                                               Margin="0,8,0,0"
+                                               Visibility="{Binding Detail, Converter={StaticResource EmptyStringToVisibility}}" />
+
+                                    <TextBlock Text="{Binding Command}"
+                                               Style="{StaticResource MonoTextStyle}"
+                                               FontSize="11"
+                                               Margin="0,6,0,0"
+                                               TextWrapping="Wrap"
+                                               Foreground="{DynamicResource TextMutedBrush}"
+                                               Visibility="{Binding Command, Converter={StaticResource EmptyStringToVisibility}}" />
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <!-- Actions -->
+            <Border Grid.Row="3"
+                    BorderBrush="{DynamicResource BorderBrush}"
+                    BorderThickness="0,1,0,0"
+                    Margin="0,16,0,0"
+                    Padding="28,16">
+                <Grid>
+                    <TextBlock Style="{StaticResource MutedTextStyle}" VerticalAlignment="Center" MaxWidth="440"
+                               Text="Nothing has been sent to the Fire TV yet. Cancel leaves the device untouched." />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="Cancel"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                MinWidth="100"
+                                IsCancel="True"
+                                Command="{Binding CancelCommand}" />
+                        <Button Content="{Binding ConfirmLabel}"
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                MinWidth="140"
+                                Margin="10,0,0,0"
+                                IsDefault="True"
+                                Command="{Binding ConfirmCommand}" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>

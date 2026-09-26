@@ -1,0 +1,125 @@
+<UserControl x:Class="FireReplace.Views.MessageDialogView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:dialogs="clr-namespace:FireReplace.Dialogs"
+             d:DataContext="{d:DesignInstance Type=dialogs:MessageDialogViewModel}"
+             mc:Ignorable="d">
+
+    <Border Style="{StaticResource CardStyle}"
+            Padding="0"
+            MaxWidth="700"
+            MaxHeight="620"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center"
+            BorderBrush="{DynamicResource BorderStrongBrush}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Margin="28,26,28,0">
+                <TextBlock Text="{Binding Title}" FontSize="19" FontWeight="SemiBold">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource BaseTextStyle}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Severity}" Value="Error">
+                                    <Setter Property="Foreground" Value="{DynamicResource DangerBrush}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Severity}" Value="Warning">
+                                    <Setter Property="Foreground" Value="{DynamicResource WarningBrush}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Severity}" Value="Success">
+                                    <Setter Property="Foreground" Value="{DynamicResource SuccessBrush}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+
+                <TextBlock Text="{Binding Message}"
+                           Style="{StaticResource SecondaryTextStyle}"
+                           FontSize="13.5"
+                           Margin="0,12,0,0"
+                           MaxWidth="620" />
+            </StackPanel>
+
+            <ScrollViewer Grid.Row="1" Margin="28,16,20,0" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <StackPanel Visibility="{Binding Causes.Count, Converter={StaticResource CountToVisibility}}">
+                        <TextBlock Text="WHAT TO CHECK" Style="{StaticResource SectionLabelStyle}" />
+                        <ItemsControl ItemsSource="{Binding Causes}" Margin="0,8,0,0">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" Margin="0,3">
+                                        <TextBlock Text="&#x2022;" Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,8,0" />
+                                        <TextBlock Text="{Binding}" Style="{StaticResource SecondaryTextStyle}" MaxWidth="580" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,16,0,0"
+                                Visibility="{Binding Detail, Converter={StaticResource EmptyStringToVisibility}}">
+                        <TextBlock Text="EXACT OUTPUT" Style="{StaticResource SectionLabelStyle}" />
+                        <Border Style="{StaticResource InsetStyle}" Margin="0,8,0,0">
+                            <TextBox Text="{Binding Detail, Mode=OneWay}"
+                                     Style="{x:Null}"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     Foreground="{DynamicResource TextSecondaryBrush}"
+                                     FontFamily="{StaticResource MonoFont}"
+                                     FontSize="11.5"
+                                     IsReadOnly="True"
+                                     TextWrapping="Wrap"
+                                     AcceptsReturn="True"
+                                     MaxHeight="220"
+                                     VerticalScrollBarVisibility="Auto"
+                                     AutomationProperties.Name="Command output" />
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+
+            <Border Grid.Row="2"
+                    BorderBrush="{DynamicResource BorderBrush}"
+                    BorderThickness="0,1,0,0"
+                    Margin="0,20,0,0"
+                    Padding="28,16">
+                <ItemsControl ItemsSource="{Binding Buttons}" HorizontalAlignment="Right">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Content="{Binding Label}"
+                                    MinWidth="110"
+                                    Margin="8,0,0,0"
+                                    Command="{Binding DataContext.ChooseCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    CommandParameter="{Binding Id}">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource SecondaryButtonStyle}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsPrimary}" Value="True">
+                                                <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+                                                <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+                                                <Setter Property="Foreground" Value="{DynamicResource TextOnAccentBrush}" />
+                                                <Setter Property="FontWeight" Value="SemiBold" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>

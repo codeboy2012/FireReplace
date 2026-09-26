@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore FireReplace.sln
+
+      - name: Build
+        run: dotnet build FireReplace.sln --configuration Release --no-restore --nologo
+
+      - name: Test
+        run: dotnet test FireReplace.sln --configuration Release --no-build --nologo
+
+      - name: Publish smoke check
+        run: >
+          dotnet publish src/FireReplace/FireReplace.csproj
+          --configuration Release --runtime win-x64 --self-contained true
+          --output ./artifacts/publish-smoke --nologo
+
+      - name: Upload publish smoke artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: FireReplace-publish-smoke
+          path: artifacts/publish-smoke/FireReplace.exe
+          if-no-files-found: error

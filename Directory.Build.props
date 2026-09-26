@@ -1,0 +1,30 @@
+<Project>
+
+  <PropertyGroup>
+    <LangVersion>12.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsNotAsErrors />
+    <AnalysisLevel>latest</AnalysisLevel>
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+    <!--
+      InvariantGlobalization is deliberately NOT enabled. WPF text layout needs real culture data:
+      with invariant globalization the font-cache code throws while measuring the first TextBlock.
+    -->
+    <InvariantGlobalization>false</InvariantGlobalization>
+    <Product>FireReplace</Product>
+    <Company>FireReplace</Company>
+    <Authors>FireReplace contributors</Authors>
+    <!-- 0.1.0-beta.1: developer-beta / pre-release. Do not call this a stable version. -->
+    <Version>0.1.0-beta.1</Version>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <FileVersion>0.1.0.0</FileVersion>
+    <Copyright>Copyright (c) FireReplace contributors</Copyright>
+    <RepositoryUrl>https://github.com/FireReplace/FireReplace</RepositoryUrl>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+
+</Project>
