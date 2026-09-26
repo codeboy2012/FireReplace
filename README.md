@@ -1,187 +1,602 @@
-# FireReplace
+<p align="center">
+  <img src="https://raw.githubusercontent.com/codeboy2012/FireReplace/refs/heads/main/assets/icon.png" width="140" alt="FireReplace">
+</p>
 
-A Windows desktop app for customising Fire TV devices over ADB: replace the stock launcher
-experience, trim Amazon bloatware, and dial back advertising and animation settings — with explicit
-confirmation before anything touches your TV.
+<h1 align="center">FireReplace</h1>
 
-## Status
+<p align="center">
+  <strong>Make your Fire TV yours.</strong>
+</p>
 
-**DEVELOPER BETA / PRE-RELEASE (v0.1.0-beta.1).** This is not a stable release. Features are
-incomplete, only a small set of devices has been tried, and there will be bugs. Do not rely on it as
-your only copy of a working TV setup — use the built-in backup page before making changes.
+<p align="center">
+  Windows desktop customization for Fire TV over ADB.
+</p>
 
-## Features
+<p align="center">
+  <a href="https://github.com/codeboy2012/FireReplace/releases">Download</a>
+  ·
+  <a href="https://github.com/codeboy2012/FireReplace/issues">Report an Issue</a>
+</p>
 
-What actually exists in this build:
+> FireReplace is still in beta and has **a lot more to come**.
+>
+> Expect bugs, incomplete features, compatibility issues, and changes between releases.
+>
+> **Please report problems through the GitHub Issues tab.**
+>
+> If you like FireReplace, consider **starring the repository**. It helps the project grow!
 
-- **Connect** to a Fire TV over Wi-Fi ADB (`adb connect ip:5555`), with connection status and a
-  clear error when ADB is missing or the TV is unreachable.
-- **Dashboard** showing device model, Android/Fire OS version, animation and privacy settings, and
-  which launcher components are active.
-- **Debloat** a vetted list of Amazon packages (`pm disable-user --user 0`), with each package
-  classified as *safe to disable*, *optional*, or *CORE — PROTECTED* and never touchable. Protected
-  packages and the Fire TV launcher are hard-guarded.
-- **Launcher setup**: install Home on Fire and/or Projectivy Launcher from a local `apks` folder,
-  grant the permissions they need, and enable accessibility/notification listeners while preserving
-  the other launcher's services.
-- **Settings** groups (animations, privacy/ads) applied as explicit, reviewable plans.
-- **Diagnostics & backups**: see exactly what FireReplace found, export the log, and back up the
-  current settings/package state before changing it.
-- **Dry-run mode** that previews every command without sending it.
+[![Developer Beta](https://img.shields.io/badge/status-DEVELOPER%20BETA-orange)](https://github.com/codeboy2012/FireReplace/releases)
+[![Latest Release](https://img.shields.io/github/v/release/codeboy2012/FireReplace?include_prereleases&label=latest%20beta)](https://github.com/codeboy2012/FireReplace/releases)
+[![Issues](https://img.shields.io/github/issues/codeboy2012/FireReplace)](https://github.com/codeboy2012/FireReplace/issues)
+[![License](https://img.shields.io/github/license/codeboy2012/FireReplace)](LICENSE)
 
-What FireReplace deliberately does **not** do: no bootloader unlocking, no rooting, no firmware
-flashing, no wiping or factory reset, no bypassing Fire OS protected-package restrictions, and no
-arbitrary shell command box. See [Safety](#safety).
+---
+
+# Getting Started
+
+## What do I need?
+
+You need:
+
+-  A Windows 10 or Windows 11 PC
+-  A compatible Fire TV
+-  Your PC and Fire TV connected to the same network
+-  ADB Debugging enabled on the Fire TV
+-  Android Platform-Tools (ADB)
+
+**You do NOT need to install .NET for the current Windows release.**
+
+The developer-beta release is distributed as a self-contained Windows build.
+
+---
+
+#  Step 1 — Download FireReplace
+
+Go to:
+
+ **[Download the latest FireReplace release](https://github.com/codeboy2012/FireReplace/releases)**
+
+Download the newest:
+
+```text
+FireReplace-win-x64.zip
+```
+
+Extract the ZIP somewhere convenient.
+
+For example:
+
+```text
+C:\Apps\FireReplace\
+```
+
+or:
+
+```text
+Downloads\FireReplace\
+```
+
+Then run:
+
+```text
+FireReplace.exe
+```
+
+---
+
+#  Step 2 — Install ADB
+
+FireReplace uses Android Debug Bridge (ADB) to communicate with your Fire TV.
+
+Download **Android SDK Platform-Tools for Windows** from Google:
+
+ https://developer.android.com/tools/releases/platform-tools
+
+Download the Windows ZIP and extract it.
+
+Your folder should contain:
+
+```text
+platform-tools/
+├── adb.exe
+├── AdbWinApi.dll
+├── AdbWinUsbApi.dll
+└── ...
+```
+
+### Recommended setup
+
+Put the `platform-tools` folder next to FireReplace:
+
+```text
+FireReplace/
+├── FireReplace.exe
+└── platform-tools/
+    ├── adb.exe
+    ├── AdbWinApi.dll
+    └── AdbWinUsbApi.dll
+```
+
+That's it.
+
+You don't need to install Android Studio.
+
+If you already have ADB installed somewhere else, FireReplace can use it through:
+
+**Preferences → ADB → Platform Tools Location**
+
+---
+
+#  Step 3 — Enable ADB on Your Fire TV
+
+On your Fire TV:
+
+**Settings → My Fire TV → Developer Options**
+
+Make sure:
+
+### ADB Debugging
+
+is enabled.
+
+If you plan to install APKs or launchers, you may also need:
+
+### Apps from Unknown Sources
+
+depending on your Fire OS version.
+
+---
+
+#  Step 4 — Find Your Fire TV's IP Address
+
+On the Fire TV:
+
+**Settings → My Fire TV → About → Network**
+
+Find:
+
+```text
+IP Address
+```
+
+It will look something like:
+
+```text
+192.168.1.147
+```
+
+Your PC and Fire TV need to be on the same local network.
+
+---
+
+# 🔌 Step 5 — Connect
+
+Open:
+
+```text
+FireReplace.exe
+```
+
+Enter your Fire TV's IP address.
+
+Click:
+
+**Connect**
+
+The first time you connect, your Fire TV may display an authorization prompt.
+
+Look at your TV and select:
+
+**Allow**
+
+FireReplace will then connect to the device.
+
+>  FireReplace does not bypass the Android ADB authorization system.
+
+---
+
+#  You're Connected!
+
+Once connected, FireReplace can show information about your Fire TV and provide access to the supported customization tools.
+
+Before changing anything:
+
+### Recommended first steps
+
+1.  Check the Dashboard
+2.  Create a backup
+3.  Use Dry Run when available
+4.  Review what a change will do
+5.  Confirm the change
+6.  Test your TV before making more changes
+
+**Don't change everything at once.**
+
+Especially while FireReplace is still in beta.
+
+---
+
+#  What FireReplace Can Do
+
+##  Dashboard
+
+See useful information about your connected Fire TV, including supported device and software information.
+
+---
+
+##  Debloat
+
+FireReplace includes a curated list of Fire TV packages that can be disabled.
+
+Packages are categorized as:
+
+ **SAFE**
+
+Generally intended for supported customization.
+
+ **OPTIONAL**
+
+May affect functionality depending on your setup.
+
+ **PROTECTED / CORE**
+
+Protected from modification.
+
+FireReplace intentionally does **not** attempt to bypass Fire OS security restrictions.
+
+---
+
+##  Launcher Setup
+
+FireReplace can help configure supported launcher tools such as:
+
+- Home on Fire
+- Projectivy Launcher
+
+The application handles supported installation and permission steps while attempting to preserve required Fire TV services.
+
+---
+
+##  Performance
+
+Manage supported Fire TV animation settings and other available performance-related options.
+
+---
+
+##  Privacy & Advertising
+
+Manage supported Fire TV privacy and advertising-related settings.
+
+---
+
+##  Backups
+
+Create backups of supported package and settings information before making changes.
+
+**Use backups before making significant changes.**
+
+---
+
+##  Dry Run
+
+Not sure what something will do?
+
+Use **Dry Run**.
+
+It allows you to preview supported operations before they are sent to your Fire TV.
+
+---
+
+##  Diagnostics & Logs
+
+FireReplace provides logs and diagnostic information to help understand what happened when something goes wrong.
+
+When reporting an issue, you may be asked to provide relevant logs.
+
+**Remove private information before posting logs publicly.**
+
+---
+
+#  Safety
+
+FireReplace is designed to make supported Fire TV customization easier without encouraging dangerous system modifications.
+
+FireReplace does **not** provide:
+
+-  Bootloader unlocking
+-  Rooting
+-  Firmware flashing
+-  Factory reset / wiping
+-  Recovery destruction
+-  Protected-package bypasses
+-  Arbitrary unrestricted shell commands
+
+If Fire OS says that something is protected, FireReplace reports the restriction rather than trying to bypass it.
+
+---
+
+# IMPORTANT: This Is a Beta
+
+FireReplace is **not a finished 1.0 application**.
+
+This is a:
+
+##  DEVELOPER BETA
+
+That means you may encounter:
+
+- Bugs
+- Crashes
+- Missing features
+- UI changes
+- Device compatibility problems
+- Incorrect package classifications
+- Fire OS version differences
+- Features that don't work on your particular TV
+
+Only a limited number of Fire TV devices have been tested so far.
+
+**Please don't assume that something tested on one Fire TV will behave identically on another.**
+
+---
+
+#  Found a Bug?
+
+**Please report it!**
+
+Go to:
+
+ **[GitHub Issues](https://github.com/codeboy2012/FireReplace/issues)**
+
+Before opening an issue:
+
+1. Search for an existing issue first.
+2. Include your Fire TV model.
+3. Include your Fire OS version.
+4. Explain what you were doing.
+5. Explain what you expected.
+6. Explain what actually happened.
+7. Include relevant logs if possible.
+
+Please remove passwords, private information, tokens, or other sensitive information before posting logs.
+
+### Example
+
+```text
+Fire TV:
+Insignia AFTALMO
+
+Fire OS:
+7.x
+
+FireReplace:
+0.1.0-beta.1
+
+What I did:
+Connected the TV and attempted to disable a package.
+
+Expected:
+The package would be disabled.
+
+What happened:
+FireReplace displayed an error.
+
+Additional information:
+[relevant log]
+```
+
+The more information you provide, the easier it is to reproduce and fix the problem.
+
+---
+
+#  Updating FireReplace
+
+FireReplace is actively being developed, so new beta releases may appear regularly.
+
+Check:
+
+ **[GitHub Releases](https://github.com/codeboy2012/FireReplace/releases)**
+
+for the newest version.
+
+You'll see versions such as:
+
+```text
+0.1.0-beta.1
+0.1.0-beta.2
+0.1.0-beta.3
+```
+
+### Before updating
+
+Read the release notes.
+
+A new beta may contain:
+
+-  Bug fixes
+-  New features
+-  Compatibility changes
+-  UI improvements
+-  Additional Fire TV support
+-  Safety changes
+
+### Current beta
+
+**Automatic updating is not implemented yet.**
+
+For now:
+
+1. Open the Releases page.
+2. Download the newest ZIP.
+3. Extract it.
+4. Replace your previous FireReplace application.
+5. Keep your backups.
+
+Automatic update support is planned for a future version.
+
+---
+
+#  Developers
+
+Want to build FireReplace yourself?
 
 ## Requirements
-
-**To run FireReplace:**
-
-- Windows 10 or 11 (x64)
-- The .NET 8 Desktop Runtime — only for the framework-dependent build; a self-contained build
-  carries its own runtime
-- Android SDK Platform Tools (adb.exe) — not bundled; see Quick Start
-- A Fire TV device with **Settings → My Fire TV → Developer Options → ADB debugging** enabled
-- PC and TV on the same local network
-
-**To build from source:**
 
 - Windows 10/11
 - .NET 8 SDK
 - Git
 
-## Quick Start
-
-1. Download the latest developer-beta release zip and extract it.
-2. Download [SDK Platform-Tools for Windows](https://developer.android.com/tools/releases/platform-tools)
-   and copy the extracted `platform-tools` folder next to `FireReplace.exe`, so the layout looks
-   like:
-
-   ```
-   FireReplace/
-       FireReplace.exe
-       platform-tools/
-           adb.exe
-           AdbWinApi.dll
-           AdbWinUsbApi.dll
-   ```
-
-3. Launch `FireReplace.exe`.
-4. On the TV, enable **Settings → My Fire TV → Developer Options → ADB debugging** and
-   **Apps from Unknown Sources** (only needed if you plan to install launchers).
-5. In FireReplace, enter the TV's IP address (find it under **Settings → My Fire TV → About →
-   Network**) and click **Connect**.
-6. When the TV asks whether to allow the ADB connection, accept it on the TV.
-7. Use the dashboard to check status, the debloat page to disable bloat, and the launcher page to
-   install a replacement launcher. A first-run checklist walks you through all of this inside the
-   app.
-
-If you already have adb somewhere else, point **Preferences → ADB → Platform tools location** at
-that folder instead of copying it.
-
-## Building From Source
+Clone the repository:
 
 ```powershell
-git clone https://github.com/FireReplace/FireReplace.git
+git clone https://github.com/codeboy2012/FireReplace.git
 cd FireReplace
+```
+
+Restore:
+
+```powershell
 dotnet restore FireReplace.sln
+```
+
+Build:
+
+```powershell
 dotnet build FireReplace.sln
+```
+
+Run tests:
+
+```powershell
 dotnet test FireReplace.sln
 ```
 
-Or run the full verification pass (restore + build + test + asset checks + publish check):
+Full verification:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts\verify.ps1
 ```
 
-There is no Visual Studio requirement — the .NET 8 SDK plus any editor is enough.
+---
 
-## Development
+#  Project Structure
 
-Repository layout:
-
+```text
+FireReplace/
+│
+├── src/
+│   ├── FireReplace/
+│   │   └── WPF application
+│   │
+│   └── FireReplace.Core/
+│       └── UI-independent core
+│
+├── tests/
+│   └── FireReplace.Tests/
+│
+├── scripts/
+│   └── Build / test / publish tools
+│
+├── assets/
+│   └── Application assets
+│
+├── platform-tools/
+│   └── Local ADB location
+│
+├── apks/
+│   └── Local APK location
+│
+├── legacy/
+│   └── Original PowerShell predecessor
+│
+├── .github/
+│   └── GitHub Actions
+│
+├── FireReplace.sln
+├── README.md
+├── RELEASE_NOTES.md
+├── LICENSE
+└── SECURITY.md
 ```
-FireReplace.sln
-src/
-    FireReplace/           WPF application (views, view models, theming)
-    FireReplace.Core/      UI-free core: ADB gateway, validation, catalogs, services
-tests/
-    FireReplace.Tests/     xUnit tests (all use recorded ADB output; no device needed)
-scripts/                   build / verify / publish / smoke-test scripts
-platform-tools/            (empty; you add adb.exe here — never committed)
-apks/                      (empty; you add launcher APKs here — never committed)
-legacy/                    the original PowerShell menu this app replaced, kept for reference
-artifacts/                 build/test output (gitignored)
-```
 
-- `src/FireReplace.Core` is deliberately dependency-free and UI-free; it is where validation,
-  argument building and ADB output parsing live, and it is covered by the unit tests.
-- Every ADB call goes through `AdbArguments`, which validates every token before it reaches
-  `ProcessStartInfo.ArgumentList`. No shell, ever.
-- Configuration lives in `%APPDATA%\FireReplace\settings.json`; backups and logs go beside the
-  executable (portable-friendly).
-- CI (`.github/workflows/ci.yml`) restores, builds, tests and does a publish smoke check on every
-  push and pull request. No Fire TV is needed or used by CI.
+Build output and other machine-specific files are intentionally excluded from GitHub.
 
-## Troubleshooting
+---
 
-**"adb.exe was not found"** — Copy `platform-tools` (containing `adb.exe`, `AdbWinApi.dll`,
-`AdbWinUsbApi.dll`) next to `FireReplace.exe`, or point Preferences → ADB at your existing copy.
-The app shows this state up front on the connect page instead of failing later.
+#  Privacy
 
-**Fire TV not reachable / connection times out** — Check the IP on the TV (About → Network), make
-sure the TV is awake, both devices are on the same network, and ADB debugging is on. Router
-"client isolation" or a VPN on the PC will block it.
+FireReplace communicates with your Fire TV over your local network.
 
-**The TV shows the authorization prompt but the app says unauthorized** — Accept the prompt on the
-TV itself. FireReplace never bypasses that prompt. If it keeps reappearing, re-plug or reboot the TV.
+It does not require an online account.
 
-**Install fails with `INSTALL_FAILED_*`** — The APK may be the wrong architecture. Most Fire TV
-sticks are `armeabi-v7a`; check the architecture on the dashboard and re-download a matching APK.
+It does not need to phone home to perform its core functions.
 
-**The TV stops responding after disabling packages** — Open the debloat page, re-enable the package
-you last changed, and reboot. Every debloat action is reversible; the launcher itself
-(`com.amazon.tv.launcher`) is protected and never disabled.
+FireReplace does not intentionally collect your Fire TV information for a remote service.
 
-**A command reports a Fire OS "security exception"** — That package is protected by Fire OS.
-FireReplace reports this instead of trying to work around it, by design.
+---
 
-**Logs** — The log panel is in-memory by default. Turn on automatic saving in Preferences, or export
-from the Diagnostics page, to get a file you can share with a bug report (redact anything you do not
-want to publish).
+#  What's Coming?
 
-## Safety
+FireReplace is still very early in development.
 
-FireReplace intentionally avoids dangerous/root-level operations. It will never unlock a bootloader,
-root, flash firmware, wipe the device, or attempt to bypass Fire OS protected-package restrictions
-— when Fire OS returns a security exception, FireReplace surfaces it as exactly that.
+There is **a LOT more planned.**
 
-Every modification goes through an explicit confirm step (this can be reviewed per-action and
-defaults to on), destructive and advanced groups are visually separated from safe ones, packages are
-labelled SAFE / OPTIONAL / PROTECTED, and a configuration backup is offered before the first change
-of a session. Dry-run mode shows every command that would be sent without sending it.
+Some areas being worked toward include:
 
-FireReplace is an ADB client. It talks to your TV over your LAN, does not phone home, and does not
-download anything.
+-  Easier app installation
+-  Automatic update support
+-  More Fire TV device testing
+-  Expanded debloat support
+-  Better backup/restore
+-  Per-device profiles
+-  More diagnostics
+-  More customization options
+-  Easier standalone distribution
+-  Continued UI improvements
 
-## Known Limitations
+The roadmap can change as development and beta testing continue.
 
-- **Tested against one device**: an Insignia Fire TV (Amazon `AFTALMO`, Fire OS 7). Other models and
-  Fire OS versions will have different package lists and behaviour.
-- Network ADB must be enabled by hand on the TV for the first connect; USB-ADB flows exist but are
-  secondary.
-- No first-run wizard beyond the in-app checklist, no signed installer, and no auto-update.
-- arm64 Windows builds are configured but not exercised in CI.
+---
 
-## Roadmap
+# Like FireReplace?
 
-- Self-contained single-file release packaging (`FireReplace-win-x64.zip`) via
-  `scripts/publish.ps1` (the script exists; wiring it to GitHub Releases is future work).
-- Wider device testing and a community-vetted debloat catalog.
-- Per-device profiles so settings can be saved and restored across TVs.
+If you find FireReplace useful:
 
-## Licence
+## ⭐ Star the repository
 
-MIT — see [LICENSE](LICENSE). Android Platform Tools and the launcher APKs are **not** covered by
-this licence and are **not** redistributed; you download them from their own projects.
+It helps the project get noticed.
+
+ **[⭐ Star FireReplace on GitHub](https://github.com/codeboy2012/FireReplace)**
+
+##  Report issues
+
+ **[Open an Issue](https://github.com/codeboy2012/FireReplace/issues)**
+
+##  Suggest improvements
+
+Feature ideas and compatibility reports are welcome.
+
+##  Contribute
+
+Developers are welcome to fork the project, make improvements, test them, and submit pull requests.
+
+---
+
+#  License
+
+FireReplace is licensed under the **MIT License**.
+
+See [LICENSE](LICENSE).
+
+Android SDK Platform-Tools and third-party launcher APKs are not covered by the FireReplace license and are not redistributed by this repository. Obtain them from their respective projects.
+
+---
+
+# FireReplace
+
+**Customize your Fire TV without living in a terminal.**
+
+**Developer Beta — expect bugs, report issues, and stay tuned.**
+
+**There's a lot more coming.**
