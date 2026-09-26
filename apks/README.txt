@@ -11,7 +11,7 @@ Recognised file names:
 Get them from their own projects:
 
   Home on Fire         https://github.com/toolicious/home-on-fire
-  Projectivy Launcher  https://forum.xda-developers.com/ (search for Projectivy Launcher)
+  Projectivy Launcher  https://github.com/spocky/miproja1
 
 Download an APK for the CPU architecture your Fire TV reports on the FireReplace dashboard.
 Many Fire TV devices are armeabi-v7a.
